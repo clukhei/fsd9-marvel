@@ -1,15 +1,29 @@
 <div class="container">
     <h1>Marvel Characters</h1>
+    <nav>
+        <ul class="pagination">
+            {{#each alphabet}}
+            <li class="page-item"><a href="/{{this}}" class="page-link">{{this}}</a></li>
+     {{!--        <input type="hidden" name="{{this}}-cached" value ="{{../cachedValue}}"> --}}
+            {{/each}}
+
+        </ul>
+    </nav>
+    {{#if notFound}}
+    <h1>Uh oh... no characters found</h1>
+    {{else}}
+
     <div class="row">
         {{#each requiredData}}
         <div class="col-3 mt-5 mb-5">
-            <a href="{{this.detailsUrl}}"> <img src="{{this.thumbnail}}" alt="{{this.name}}" height="100%" width="100%"></a>
-            <a href="{{this.detailsUrl}}">{{this.name}}</a>
+            <a href="{{this.detailsUrl}}"> <img src="{{this.thumbnail}}" alt="{{this.name}}" height="100%"
+                    width="100%"></a>
             <form action="">
-                <button class="btn btn-warning" type="submit" formaction="/">{{this.id}} hello</button>
+                <button class="btn btn-warning" type="submit" formaction="/">{{this.name}}</button>
             </form>
         </div>
 
         {{/each}}
     </div>
+    {{/if}}
 </div>
