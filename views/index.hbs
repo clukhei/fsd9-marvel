@@ -1,0 +1,15 @@
+<div class="container">
+    <h1>Marvel Characters</h1>
+    <div class="row">
+        {{#each requiredData}}
+        <div class="col-3 mt-5 mb-5">
+            <a href="{{this.detailsUrl}}"> <img src="{{this.thumbnail}}" alt="{{this.name}}" height="100%" width="100%"></a>
+            <a href="{{this.detailsUrl}}">{{this.name}}</a>
+            <form action="">
+                <button class="btn btn-warning" type="submit" formaction="/">{{this.id}} hello</button>
+            </form>
+        </div>
+
+        {{/each}}
+    </div>
+</div>
