@@ -16,30 +16,32 @@ const ts = new Date();
 const hash = md5(`${ts}${process.env.private_key}${process.env.apikey}`);
 console.log(hash);
 
-const cachedData = [];
-const cachedAlpha = [];
+let cachedData = [];
+let cachedAlpha = [];
+
+setInterval(()=>{
+	cachedData = []
+	cachedAlpha= []
+	console.log(cachedData, cachedAlpha)
+}, 1.08e+7
+)
 app.get(
 	"/:x",
 	(req, res, next) => {
-		console.log(cachedAlpha);
-		if ((cachedAlpha.length = 0)) {
-			next();
-		} else {
-			const matched = (n) => (n = req.params.x);
-			const index = cachedAlpha.findIndex(matched);
+		console.log(cachedAlpha)
 
-			const savedData = cachedData[index];
-			if (savedData) {
-				res.status(200);
-				res.type("text/html");
-				res.render("index", {
-					requiredData: savedData,
-				});
-
-				console.log("no fetching");
-				res.end();
-			} else next();
-		}
+			const matchIndex = cachedAlpha.indexOf(req.params.x)
+			console.log(matchIndex)
+			if (matchIndex >= 0) {
+				console.log('notfetching')
+				res.status(200)
+				res.type('text/html')
+				res.render('index', {
+					requiredData: cachedData[matchIndex],
+					alphabet
+				})
+			
+			} else next()
 	},
 	async (req, res) => {
 		const marvelNameStartsWithUrl = withQuery(marvelApiUrl, {
@@ -54,6 +56,10 @@ app.get(
 			const results = await fetch(marvelNameStartsWithUrl);
 			const jsonData = await results.json();
 			const requiredData = formatData(jsonData.data.results);
+
+			cachedAlpha.push(req.params.x);
+			cachedData.push(requiredData);
+			console.log(cachedAlpha)
 			if (jsonData.data.count <= 0) {
 				res.status(400);
 				res.type("text/html");
@@ -62,10 +68,9 @@ app.get(
 				});
 				return Promise.reject("Not found");
 			}
-
-			cachedData.push(requiredData);
-			cachedAlpha.push(req.params.x);
-			console.log(cachedAlpha);
+		
+			
+		
 			res.status(200);
 			res.type("text/html");
 			res.render("index", {
@@ -89,12 +94,11 @@ const formatData = (fetchedData) => {
 };
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVXYZ".split("");
 app.get("/", (req, res) => {
-	const cachedValue = [];
+
 	fetch(marvelUrl)
 		.then((results) => results.json())
 		.then((json) => {
 			const requiredData = formatData(json.data.results);
-			console.log(requiredData);
 			if (json.data.count <= 0) {
 				return Promise.reject("Not found");
 			}
@@ -103,8 +107,7 @@ app.get("/", (req, res) => {
 			res.type("text/html");
 			res.render("index", {
 				requiredData,
-				alphabet,
-				cachedValue: JSON.stringify(cachedValue),
+				alphabet
 			});
 		})
 		.catch((e) => console.error("Error", e));
